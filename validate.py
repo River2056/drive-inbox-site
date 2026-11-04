@@ -42,11 +42,14 @@ for name in PAGES:
     assert any(t == 'html' and a.get('lang') == 'en' for t, a in doc.tags), name
     assert any(t == 'meta' and a.get('name') == 'viewport' for t, a in doc.tags), name
     assert not any(t in {'script', 'iframe', 'form'} for t, _ in doc.tags), name
-    assert '[ADD YOUR MONITORED SUPPORT EMAIL BEFORE PUBLISHING]' in text, name
+    assert '[ADD YOUR MONITORED SUPPORT EMAIL BEFORE PUBLISHING]' not in text, name
+    assert 'mailto:chen0625tung@gmail.com' in doc.links, name
     for link in doc.links:
         target = urlsplit(link)
         if target.scheme or target.netloc:
-            assert target.scheme == 'https', link
+            assert target.scheme in {'https', 'mailto'}, link
+            if target.scheme == 'mailto':
+                assert target.path == 'chen0625tung@gmail.com', link
             continue
         if target.path:
             path = (ROOT / target.path).resolve()
