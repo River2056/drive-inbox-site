@@ -1,4 +1,4 @@
-"""Check the draft's structure, local links, and HTTP delivery."""
+"""Check the public site's structure, local links, and HTTP delivery."""
 from functools import partial
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -44,6 +44,14 @@ for name in PAGES:
     assert not any(t in {'script', 'iframe', 'form'} for t, _ in doc.tags), name
     assert '[ADD YOUR MONITORED SUPPORT EMAIL BEFORE PUBLISHING]' not in text, name
     assert 'mailto:chen0625tung@gmail.com' in doc.links, name
+    assert 'operated by River' in text, name
+    for marker in ('Unpublished draft', 'before launch', 'must be reviewed', 'Draft status', '[ADD YOUR'):
+        assert marker not in text, (name, marker)
+    if name in {'privacy.html', 'terms.html'}:
+        assert '<time datetime="2026-11-04">November 4, 2026</time>' in text, name
+    if name == 'privacy.html':
+        assert 'hosted on GitHub Pages' in text, name
+        assert 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement' in doc.links, name
     for link in doc.links:
         target = urlsplit(link)
         if target.scheme or target.netloc:

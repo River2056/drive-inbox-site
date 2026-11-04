@@ -1,0 +1,5 @@
+# Keep development files out of the branch-based Pages build.
+exclude:
+  - README.md
+  - validate.py
+  - __pycache__
